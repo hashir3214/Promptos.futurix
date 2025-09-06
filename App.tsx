@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import PasswordGate from './components/PasswordGate';
-import Dashboard from './components/Dashboard';
+import PasswordGate from './PasswordGate';
+import Dashboard from './Dashboard';
 import { CORRECT_PASSWORD } from './constants';
 
 const App: React.FC = () => {

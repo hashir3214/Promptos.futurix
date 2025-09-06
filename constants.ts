@@ -1,3 +1,4 @@
+
 // FIX: Import newly added types.
 import type { PromptCategory, Resource, CelestialBody, SolarPromptData } from './types';
 
