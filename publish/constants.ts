@@ -1,3 +1,4 @@
+
 // FIX: Import newly added types.
 import type { PromptCategory, Resource, CelestialBody, SolarPromptData } from './types';
 
@@ -56,23 +57,6 @@ export const HIDDEN_VAULT_PROMPTS: PromptCategory[] = [
             {
                 title: 'Cognitive Re-framing for High-Stakes Negotiation',
                 prompt: 'Act as a master negotiator and behavioral psychologist. I am entering a high-stakes negotiation with [describe the other party and context]. Provide a script that uses advanced psychological framing techniques (e.g., loss aversion, anchor pricing, temporal distortion) to architect the negotiation space and steer the outcome in my favor.',
-            },
-            {
-                title: 'Market Anomaly Exploitation Model',
-                prompt: 'You are an AI specializing in quantitative analysis and algorithmic trading. Analyze the following real-time data stream [provide sample data or describe data source] for the [specific asset class] market. Identify three subtle, exploitable anomalies that traditional models would likely miss. For each anomaly, describe the pattern, its statistical significance, and a high-level strategy to capitalize on it with minimal risk exposure.',
-            }
-        ]
-    },
-    {
-        category: 'Cognitive & Reality Augmentation',
-        prompts: [
-            {
-                title: 'Synthetic Reality Architect',
-                prompt: 'Design a high-fidelity synthetic reality environment for training special operations teams in [complex urban environment]. The simulation must include dynamic, unpredictable civilian and threat AI behaviors, realistic physics for ballistics and structural integrity, and physiological feedback loops (e.g., stress indicators) for trainees. Describe the core architecture, the AI behavior models, and the key metrics for measuring performance.',
-            },
-            {
-                title: 'Memetic Warfare Catalyst',
-                prompt: 'Act as a cultural psychoanalyst and master propagandist. Your task is to design a "memetic catalyst" to shift public opinion within [target demographic] regarding [controversial topic]. The catalyst should not be a direct statement but a cluster of interconnected ideas, symbols, and narratives that are highly shareable and emotionally resonant. Detail the core meme, its variations for different media platforms, and the psychological levers it activates.',
             }
         ]
     }

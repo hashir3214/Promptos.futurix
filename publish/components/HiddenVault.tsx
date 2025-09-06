@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { HIDDEN_VAULT_PROMPTS } from '../constants';
 import type { Prompt } from '../types';
@@ -37,7 +38,6 @@ const VaultPromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
 };
 
 const HiddenVault: React.FC = () => {
-  let cardIndex = 0;
   return (
     <div className="animate-vault-reveal">
       <header className="mb-8 text-center">
@@ -48,23 +48,11 @@ const HiddenVault: React.FC = () => {
           Elite-tier protocols unlocked. Discretion is paramount.
         </p>
       </header>
-      <div className="space-y-12 max-w-4xl mx-auto">
-        {HIDDEN_VAULT_PROMPTS.map((category, index) => (
-          <section key={index}>
-            <h2 className="text-3xl font-orbitron text-purple-300 mb-6 border-b-2 border-purple-500/30 pb-2">
-              {category.category}
-            </h2>
-            <div className="space-y-8">
-              {category.prompts.map((prompt) => {
-                cardIndex++;
-                return (
-                  <div key={prompt.title} className={`animate-fadeIn animate-fadeIn-delay-${cardIndex}`}>
-                    <VaultPromptCard prompt={prompt} />
-                  </div>
-                )
-              })}
-            </div>
-          </section>
+      <div className="space-y-8 max-w-4xl mx-auto">
+        {HIDDEN_VAULT_PROMPTS[0].prompts.map((prompt, index) => (
+          <div key={index} className={`animate-fadeIn animate-fadeIn-delay-${index + 2}`}>
+            <VaultPromptCard prompt={prompt} />
+          </div>
         ))}
       </div>
     </div>
