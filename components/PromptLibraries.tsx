@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { PROMPT_CATEGORIES } from '../constants';
 import type { Prompt, PromptCategory } from '../types';
-import { ChevronDownIcon, ClipboardIcon } from './icons/Icons';
+import { ChevronDownIcon, ClipboardIcon, SearchIcon } from './icons/Icons';
 
 const PromptCard: React.FC<{ prompt: Prompt }> = ({ prompt }) => {
   const [copied, setCopied] = useState(false);
@@ -55,18 +55,53 @@ const CategoryAccordion: React.FC<{ category: PromptCategory }> = ({ category })
 };
 
 const PromptLibraries: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const filteredCategories = PROMPT_CATEGORIES
+    .map(category => ({
+      ...category,
+      prompts: category.prompts.filter(
+        prompt =>
+          prompt.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          prompt.prompt.toLowerCase().includes(searchTerm.toLowerCase())
+      ),
+    }))
+    .filter(category => category.prompts.length > 0);
+    
   return (
     <div className="animate-fadeIn">
       <header className="mb-8">
         <h1 className="text-5xl font-orbitron text-cyan-300">Prompt Arsenal</h1>
         <p className="mt-2 text-lg text-gray-400">Deploy high-yield cognitive frameworks at will.</p>
       </header>
+      
+      <div className="relative mb-8 animate-fadeIn animate-fadeIn-delay-1">
+        <div className="absolute inset-y-0 left-0 flex items-center pl-4 pointer-events-none text-gray-400">
+            <SearchIcon />
+        </div>
+        <input
+          type="search"
+          placeholder="Search prompts by keyword..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full bg-gray-900/50 border-2 border-gray-700/60 rounded-lg pl-12 pr-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-500/50 focus:ring-1 focus:ring-cyan-500/50 transition-all duration-300"
+          aria-label="Search prompts"
+        />
+      </div>
+
       <div className="space-y-6">
-        {PROMPT_CATEGORIES.map((cat, index) => (
-          <div key={index} className={`animate-fadeIn animate-fadeIn-delay-${index + 1}`}>
-            <CategoryAccordion category={cat} />
+        {filteredCategories.length > 0 ? (
+          filteredCategories.map((cat, index) => (
+            <div key={cat.category} className={`animate-fadeIn animate-fadeIn-delay-${index + 2}`}>
+              <CategoryAccordion category={cat} />
+            </div>
+          ))
+        ) : (
+          <div className="text-center py-12 animate-fadeIn animate-fadeIn-delay-2">
+            <h3 className="text-xl font-orbitron text-gray-400">No Prompts Found</h3>
+            <p className="text-gray-500 mt-2">Your search for "{searchTerm}" did not match any prompts.</p>
           </div>
-        ))}
+        )}
       </div>
     </div>
   );

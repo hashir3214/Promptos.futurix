@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { SparklesIcon, ArrowLeftIcon, ArrowRightIcon, RefreshIcon, ClipboardIcon } from './icons/Icons';
 
@@ -42,48 +43,119 @@ const modelData = {
 
 type ModelKey = keyof typeof modelData;
 
-const tutorialSteps = [
-    { 
-        title: 'Step 1: Assign a Persona', 
+const tutorialData = {
+  gemini: {
+    initialSelections: {
+      persona: 'Act as a senior data analyst for a tech company',
+      task: 'analyze the attached chart and generate a summary',
+      context: "The chart shows user engagement metrics for our new feature over the last quarter. Focus on trends and anomalies.",
+      format: 'in a JSON object with keys "summary", "key_insights", and "recommendations"'
+    },
+    steps: [
+      { 
+        title: 'Step 1: Define a Technical Persona', 
         field: 'persona',
-        feedback: "Excellent. Giving the AI a persona focuses its knowledge and sets a professional tone.",
-        options: ['Act as a world-class marketing strategist', 'Act as a senior software engineer specializing in AI', 'Act as a renowned science fiction author'] 
-    },
-    { 
-        title: 'Step 2: Define the Task', 
+        feedback: "Excellent. Gemini's strengths in reasoning and structured data are enhanced with a technical persona.",
+        options: ['Act as a senior data analyst for a tech company', 'Act as a Google Cloud architect', 'Act as a multimodal AI specialist'] 
+      },
+      { 
+        title: 'Step 2: Specify a Complex Task', 
         field: 'task',
-        feedback: "Perfect. A clear, actionable task prevents ambiguity and gets you closer to the desired output.",
-        options: ['develop a campaign slogan', 'write a function to analyze sentiment', 'outline a short story plot'] 
-    },
-    { 
-        title: 'Step 3: Provide Context', 
+        feedback: "Perfect. Gemini is well-suited for tasks that involve reasoning, data analysis, or multimodality.",
+        options: ['analyze the attached chart and generate a summary', 'design a scalable database schema', 'write a Python script to process image data'] 
+      },
+      { 
+        title: 'Step 3: Provide Rich Context', 
         field: 'context',
-        feedback: "Crucial. Context grounds the AI, ensuring the output is relevant and tailored to your specific needs.",
+        feedback: "Crucial. Providing detailed data, schemas, or visual descriptions helps Gemini produce highly accurate results.",
         isTextarea: true,
-        placeholder: "e.g., for a new line of zero-gravity sneakers called 'Stellars'."
-    },
-    { 
-        title: 'Step 4: Specify the Format',
+        placeholder: "e.g., The chart shows user engagement metrics... The database is for an e-commerce platform..."
+      },
+      { 
+        title: 'Step 4: Demand a Structured Format',
         field: 'format',
-        feedback: "Great choice. Explicitly defining the format saves you time on post-processing and makes the output immediately usable.",
-        options: ['as a bulleted list of 5 options', 'as a JSON object with "slogan" and "targetAudience" keys', 'in a three-paragraph summary']
-    }
-];
+        feedback: "Great choice. Using JSON mode with a `responseSchema` is the most reliable way to get structured output from Gemini.",
+        options: ['in a JSON object with keys "summary", "key_insights", and "recommendations"', 'as a markdown table comparing pros and cons', 'as a well-documented Python script']
+      }
+    ]
+  },
+  chatgpt: {
+    initialSelections: {
+      persona: 'Act as a witty social media manager',
+      task: 'brainstorm 5 engaging post ideas',
+      context: "for a new brand of sustainable, futuristic sneakers called 'Nova'. The target audience is environmentally conscious millennials.",
+      format: 'in a conversational, upbeat tone with relevant hashtags'
+    },
+    steps: [
+       { 
+        title: 'Step 1: Assign a Creative Persona', 
+        field: 'persona',
+        feedback: "Excellent. ChatGPT excels at adopting creative and conversational personas, making the interaction feel more natural.",
+        options: ['Act as a witty social media manager', 'Act as a renowned science fiction author', 'Act as an encouraging creative writing coach'] 
+      },
+      { 
+        title: 'Step 2: Define a Generative Task', 
+        field: 'task',
+        feedback: "Perfect. This plays to ChatGPT's strengths in brainstorming, writing, and creative content generation.",
+        options: ['brainstorm 5 engaging post ideas', 'write the opening chapter of a novel', 'compose a short, rhyming poem'] 
+      },
+      { 
+        title: 'Step 3: Set the Scene with Context', 
+        field: 'context',
+        feedback: "Crucial. The more vivid the context, the more imaginative and relevant ChatGPT's response will be.",
+        isTextarea: true,
+        placeholder: "e.g., for a new brand of sustainable, futuristic sneakers... The story is about a lone explorer on a distant planet..."
+      },
+      { 
+        title: 'Step 4: Specify Style and Tone',
+        field: 'format',
+        feedback: "Great choice. Guiding the tone and style is key to getting the creative output you envision from ChatGPT.",
+        options: ['in a conversational, upbeat tone with relevant hashtags', 'using descriptive, cinematic language', 'in a simple, elegant, and inspirational style']
+      }
+    ]
+  },
+  deepseek: {
+    initialSelections: {
+      persona: 'Act as a senior Python developer specializing in backend systems',
+      task: 'write a function to validate user API keys',
+      context: "The function should take a string API key, check it against a database (mock the DB call), and handle rate limiting. It must be highly performant.",
+      format: 'with full type hints, docstrings, and include unit tests using pytest'
+    },
+    steps: [
+      { 
+        title: 'Step 1: Assign a Coder Persona', 
+        field: 'persona',
+        feedback: "Excellent. A specific developer persona helps DeepSeek focus on the correct libraries, idioms, and best practices.",
+        options: ['Act as a senior Python developer specializing in backend systems', 'Act as a frontend engineer skilled in React and TypeScript', 'Act as a C++ performance optimization expert'] 
+      },
+      { 
+        title: 'Step 2: Define a Precise Coding Task', 
+        field: 'task',
+        feedback: "Perfect. DeepSeek is a code specialist. The more precise the task, the better the generated code will be.",
+        options: ['write a function to validate user API keys', 'create a reusable React hook for data fetching', 'refactor this C++ class to use smart pointers'] 
+      },
+      { 
+        title: 'Step 3: Provide Technical Context', 
+        field: 'context',
+        feedback: "Crucial. Details like language version, libraries, dependencies, and performance constraints are vital for DeepSeek.",
+        isTextarea: true,
+        placeholder: "e.g., The function should use Python 3.9+. The React hook should use `useEffect` and `useState` and handle loading/error states..."
+      },
+      { 
+        title: 'Step 4: Specify Code Formatting',
+        field: 'format',
+        feedback: "Great choice. Explicitly requesting docs, tests, and style conventions ensures the code is production-ready.",
+        options: ['with full type hints, docstrings, and include unit tests using pytest', 'as a single TypeScript file (TSX) with JSDoc comments', 'with comments explaining the performance improvements']
+      }
+    ]
+  }
+};
 
-const InteractiveTutorial: React.FC = () => {
+const InteractiveTutorial: React.FC<{ modelTutorialData: any, modelName: string }> = ({ modelTutorialData, modelName }) => {
     const [currentStep, setCurrentStep] = useState(0);
-    const [selections, setSelections] = useState({
-        persona: '',
-        task: '',
-        context: "for a new line of zero-gravity sneakers called 'Stellars'.",
-        format: ''
-    });
+    const [selections, setSelections] = useState(modelTutorialData.initialSelections);
     const [finalPrompt, setFinalPrompt] = useState('');
     const [copied, setCopied] = useState(false);
-
-    const initialSelections = {
-        persona: '', task: '', context: "for a new line of zero-gravity sneakers called 'Stellars'.", format: ''
-    };
 
     useEffect(() => {
         const { persona, task, context, format } = selections;
@@ -96,7 +168,7 @@ const InteractiveTutorial: React.FC = () => {
     };
     
     const handleReset = () => {
-        setSelections(initialSelections);
+        setSelections(modelTutorialData.initialSelections);
         setCurrentStep(0);
     };
 
@@ -106,12 +178,14 @@ const InteractiveTutorial: React.FC = () => {
         setTimeout(() => setCopied(false), 2000);
     };
 
-    const stepData = tutorialSteps[currentStep];
+    const stepData = modelTutorialData.steps[currentStep];
 
     return (
         <div className="bg-black/30 border border-purple-500/30 rounded-lg p-6 shadow-lg shadow-purple-500/10">
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-orbitron text-purple-300">Interactive Prompt Builder</h3>
+                <h3 className="text-xl font-orbitron text-purple-300">
+                    Interactive Prompt Builder <span className="text-cyan-400 font-normal">for {modelName}</span>
+                </h3>
                 <button onClick={handleReset} className="flex items-center gap-2 text-sm text-gray-400 hover:text-white transition-colors">
                     <RefreshIcon /> Reset
                 </button>
@@ -119,15 +193,17 @@ const InteractiveTutorial: React.FC = () => {
 
             {/* Progress Bar */}
             <div className="w-full bg-gray-700/50 rounded-full h-2.5 mb-6">
-                <div className="bg-purple-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${((currentStep + 1) / tutorialSteps.length) * 100}%` }}></div>
+                <div className="bg-purple-500 h-2.5 rounded-full transition-all duration-500" style={{ width: `${((currentStep + 1) / modelTutorialData.steps.length) * 100}%` }}></div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left: Tutorial Step */}
                 <div className="animate-slide-in-right" key={currentStep}>
                     <h4 className="text-lg font-semibold text-gray-200 mb-1">{stepData.title}</h4>
-                    {selections[stepData.field as keyof typeof selections] && <p className="text-sm text-cyan-300 mb-4 h-10">{stepData.feedback}</p>}
-                    {!selections[stepData.field as keyof typeof selections] && <p className="text-sm text-gray-500 mb-4 h-10 italic">Make a selection to see feedback.</p>}
+                    {selections[stepData.field as keyof typeof selections] ? 
+                        <p className="text-sm text-cyan-300 mb-4 h-10">{stepData.feedback}</p> :
+                        <p className="text-sm text-gray-500 mb-4 h-10 italic">Make a selection to see feedback.</p>
+                    }
                     
                     <div className="space-y-3">
                         {stepData.isTextarea ? (
@@ -139,7 +215,7 @@ const InteractiveTutorial: React.FC = () => {
                                 rows={4}
                             />
                         ) : (
-                            stepData.options.map(option => {
+                            (stepData.options || []).map((option: string) => {
                                 const isSelected = selections[stepData.field as keyof typeof selections] === option;
                                 return (
                                 <button key={option} onClick={() => handleSelection(stepData.field, option)}
@@ -166,11 +242,11 @@ const InteractiveTutorial: React.FC = () => {
 
             {/* Navigation */}
             <div className="flex justify-between mt-6 border-t border-gray-700/50 pt-4">
-                <button onClick={() => setCurrentStep(s => s - 1)} disabled={currentStep === 0}
+                <button onClick={() => setCurrentStep(s => Math.max(0, s - 1))} disabled={currentStep === 0}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 rounded-md text-white hover:bg-gray-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                     <ArrowLeftIcon /> Previous
                 </button>
-                <button onClick={() => setCurrentStep(s => s + 1)} disabled={currentStep === tutorialSteps.length - 1}
+                <button onClick={() => setCurrentStep(s => Math.min(modelTutorialData.steps.length - 1, s + 1))} disabled={currentStep === modelTutorialData.steps.length - 1}
                     className="flex items-center gap-2 px-4 py-2 bg-gray-700/50 rounded-md text-white hover:bg-gray-600/50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
                     Next <ArrowRightIcon />
                 </button>
@@ -194,6 +270,7 @@ const PrincipleCard: React.FC<{ title: string; description: string; delay: numbe
 const PromptCraft: React.FC = () => {
   const [activeModel, setActiveModel] = useState<ModelKey>('gemini');
   const activeModelData = modelData[activeModel];
+  const activeTutorialData = tutorialData[activeModel];
 
   return (
     <div className="space-y-12 animate-fadeIn">
@@ -207,7 +284,11 @@ const PromptCraft: React.FC = () => {
       </header>
       
       <section className="animate-fadeIn animate-fadeIn-delay-4">
-        <InteractiveTutorial />
+        <InteractiveTutorial 
+            key={activeModel}
+            modelTutorialData={activeTutorialData}
+            modelName={activeModelData.name}
+        />
       </section>
 
       <section className="animate-fadeIn animate-fadeIn-delay-2">
